@@ -10,7 +10,7 @@ There are several  components of this project:
 
 Arduino sketch to set the node's ID in EEPROM so that every node can have the same source code (without hard-coding the node ID). This is a one-time process for each node. Set the node ID in this sketch then upload to a node (e.g. a Moteino). When it runs it saves the node ID in EEPROM. Then you can load the LoRaMesh sketch to the node.
 
-Pinout with Arduino Pro mini
+Pinout with Arduino Pro mini using an UNO as intermediate mechanism
 
 | Mini  |  Uno  |
 | ----- | ----- |

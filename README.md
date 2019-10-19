@@ -12,13 +12,14 @@ Arduino sketch to set the node's ID in EEPROM so that every node can have the sa
 
 Pinout with Arduino Pro mini
 
-  Mini   ->    Uno
-  GND     |->  GND
-  VCC     |->  5V
-  RX1     |->  RX0
-  TX0     |->  TX1
-  DTR     |->  Reset
-  
+| Mini  |  Uno  |
+| ----- | ----- |
+|  GND  |  GND  |
+|  VCC  |  5V   |
+|  RX1  |  RX0  |
+|  TX0  |  TX1  |
+|  DTR  |  RST  |
+
 ### LoRaMesh
 
 Arduino sketch that attempts to talk to all other nodes in the mesh. Each node sends its routing information to every other node. The process of sending data and receiving acknowledgements lets a node determine which nodes it can successfully communicate with directly. This is how each node builds up it's routing table. You must set N_NODES to the max number of nodes in your mesh.

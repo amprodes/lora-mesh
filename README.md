@@ -1,6 +1,6 @@
 # LoRa Mesh Networking
 
-This project implements the components of a system that demonstrates mesh networking between LoRa nodes and a way to visualize the network on a web page. For full details of the project, see the [full project writeup on the Project Lab blog](https://nootropicdesign.com/projectlab/2018/10/20/lora-mesh-networking/).
+This project implements the components of a system that demonstrates mesh networking between LoRa nodes and a way to visualize the network on a web page. For full details of the project.
 
 Nodes in the network are Arduino-compatible boards with a LoRa tranceiver. For example, [Moteino](https://lowpowerlab.com/guide/moteino/lora-support/) boards.
 
@@ -10,6 +10,15 @@ There are several  components of this project:
 
 Arduino sketch to set the node's ID in EEPROM so that every node can have the same source code (without hard-coding the node ID). This is a one-time process for each node. Set the node ID in this sketch then upload to a node (e.g. a Moteino). When it runs it saves the node ID in EEPROM. Then you can load the LoRaMesh sketch to the node.
 
+Pinout with Arduino Pro mini
+
+  Mini   ->    Uno
+  GND     |->  GND
+  VCC     |->  5V
+  RX1     |->  RX0
+  TX0     |->  TX1
+  DTR     |->  Reset
+  
 ### LoRaMesh
 
 Arduino sketch that attempts to talk to all other nodes in the mesh. Each node sends its routing information to every other node. The process of sending data and receiving acknowledgements lets a node determine which nodes it can successfully communicate with directly. This is how each node builds up it's routing table. You must set N_NODES to the max number of nodes in your mesh.

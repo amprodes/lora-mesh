@@ -2,9 +2,9 @@
 
 This project implements the components of a system that demonstrates mesh networking between LoRa nodes and a way to visualize the network on a web page. For full details of the project.
 
-Nodes in the network are Arduino-compatible boards with a LoRa tranceiver. For example, [Moteino](https://lowpowerlab.com/guide/moteino/lora-support/) boards.
+Nodes in the network are Arduino-compatible boards with a LoRa tranceiver. Using Arduino PRO mini, loRa-02 and ESP8266 wifi module
 
-There are several  components of this project:
+There are several components of this project:
 
 ### SetNodeId
 

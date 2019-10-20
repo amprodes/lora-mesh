@@ -24,6 +24,20 @@ Pinout with Arduino Pro mini using an UNO as intermediate mechanism
 
 Arduino sketch that attempts to talk to all other nodes in the mesh. Each node sends its routing information to every other node. The process of sending data and receiving acknowledgements lets a node determine which nodes it can successfully communicate with directly. This is how each node builds up it's routing table. You must set N_NODES to the max number of nodes in your mesh.
 
+
+
+
+|    LoRa-02 Module   |  Arduino Nano Board  |
+| ------------------- | -------------------- |
+|        3.3V         |   Batery Lipo 3.6v   |
+|        GND          |         GND          |
+|        EN/Nss       |         D10          |
+|        G0/DIO0      |         D2           |
+|        SCK          |         D13          |
+|        MISO         |         D12          |
+|        MOSI         |         D11          |
+|        RST          |         D9           |
+
 Dependencies:
 
 * [RadioHead library](http://www.airspayce.com/mikem/arduino/RadioHead/)

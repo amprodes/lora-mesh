@@ -37,6 +37,33 @@ Dependencies:
 
 * [PubSubClient](https://github.com/knolleary/pubsubclient)
 
+Pinout with Arduino Pro mini and ESP2866-01 Wifi;
+
+Programming mode
+
+| Mini  |  Esp  |
+| ----- | ----- |
+|  VCC  |  3V3  |
+|  RX1  |  RX   |
+|  TX1  |  TX   |
+|  NAN  |  RST  |
+|  GND  |  GP01 |
+|  VCC  |   EN  |
+|  NAN  |  GP02 |
+|  GND  |  GND  |
+
+Running Mode
+
+| Mini  |  Esp  |
+| ----- | ----- |
+|  VCC  |  3V3  |
+|  RX1  |  RX   |
+|  TX1  |  TX   |
+|  NAN  |  RST  |
+|  NAN  |  GP01 |
+|  VCC  |   EN  |
+|  NAN  |  GP02 |
+|  GND  |  GND  |
 
 ### mesh-server
 

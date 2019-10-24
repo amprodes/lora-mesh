@@ -32,7 +32,7 @@ Arduino sketch that attempts to talk to all other nodes in the mesh. Each node s
 |        3.3V         |   Batery Lipo 3.6v   |
 |        GND          |         GND          |
 |        EN/Nss       |         D10          |
-|        G0/DIO0      |         D2           |
+|        G0/DIO0      |         D4           |
 |        SCK          |         D13/SCK      |
 |        MISO         |         D12/MISO     |
 |        MOSI         |         D11/MOSI     |

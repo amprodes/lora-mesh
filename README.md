@@ -33,9 +33,9 @@ Arduino sketch that attempts to talk to all other nodes in the mesh. Each node s
 |        GND          |         GND          |
 |        EN/Nss       |         D10          |
 |        G0/DIO0      |         D2           |
-|        SCK          |         D13          |
-|        MISO         |         D12          |
-|        MOSI         |         D11          |
+|        SCK          |         D13/SCK      |
+|        MISO         |         D12/MISO     |
+|        MOSI         |         D11/MOSI     |
 |        RST          |         D9           |
 
 Dependencies:

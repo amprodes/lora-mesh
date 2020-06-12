@@ -4,10 +4,7 @@
 #include <ESP8266WiFi.h>
 #include <SPI.h>
 #include <Wire.h>
-#ifdef IOTEXPERIMENTER
-#include <Adafruit_GFX.h>
-#include <Adafruit_NeoPixel.h>
-#include <Adafruit_SSD1306.h>
+#ifdef IOTEXPERIMENTER 
 #endif
 #include <PubSubClient.h>
 

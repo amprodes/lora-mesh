@@ -174,6 +174,7 @@ void loop() {
     // listen for incoming messages. Wait a random amount of time before we transmit
     // again to the next node
     unsigned long nextTransmit = millis() + random(3000, 5000);
+    
     while (nextTransmit > millis()) {
       int waitTime = nextTransmit - millis();
       uint8_t len = sizeof(buf);

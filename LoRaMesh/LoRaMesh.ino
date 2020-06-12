@@ -1,15 +1,12 @@
-
 #include <EEPROM.h>
 #include <RHRouter.h>
 #include <RHMesh.h>
 #include <RH_RF95.h>
-#define RH_HAVE_SERIAL
-#define LED 9
-#define N_NODES 4
+#define RH_HAVE_SERIAL 
 
 uint8_t nodeId;
-uint8_t routes[N_NODES]; // full routing table for mesh
-int16_t rssi[N_NODES]; // signal strength info
+//uint8_t routes[N_NODES]; // full routing table for mesh
+//int16_t rssi[N_NODES]; // signal strength info
 
 // Singleton instance of the radio driver
 RH_RF95 rf95;
@@ -26,18 +23,19 @@ int freeMem() {
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 }
 
-void setup() {
-  randomSeed(analogRead(0));
-  pinMode(LED, OUTPUT);
+void setup() { 
+  
   Serial.begin(115200);
   while (!Serial) ; // Wait for serial port to be available
 
   nodeId = EEPROM.read(0);
+  
   if (nodeId > 10) {
     Serial.print(F("EEPROM nodeId invalid: "));
     Serial.println(nodeId);
     nodeId = 1;
   }
+  
   Serial.print(F("initializing node "));
 
   manager = new RHMesh(rf95, nodeId);
@@ -47,8 +45,9 @@ void setup() {
   } else {
     Serial.println("done");
   }
+  
   rf95.setTxPower(23, false);
-  rf95.setFrequency(915.0);
+  rf95.setFrequency(433.0);
   rf95.setCADTimeout(500);
 
   // Possible configurations:
@@ -60,26 +59,24 @@ void setup() {
   // long range configuration requires for on-air time
   boolean longRange = false;
   if (longRange) {
-    RH_RF95::ModemConfig modem_config = {
+    
+    rf95::ModemConfig modem_config = {
       0x78, // Reg 0x1D: BW=125kHz, Coding=4/8, Header=explicit
       0xC4, // Reg 0x1E: Spread=4096chips/symbol, CRC=enable
       0x08  // Reg 0x26: LowDataRate=On, Agc=Off.  0x0C is LowDataRate=ON, ACG=ON
     };
+    
     rf95.setModemRegisters(&modem_config);
     if (!rf95.setModemConfig(RH_RF95::Bw125Cr48Sf4096)) {
       Serial.println(F("set config failed"));
     }
+    
   }
 
   Serial.println("RF95 ready");
-
-  for(uint8_t n=1;n<=N_NODES;n++) {
-    routes[n-1] = 0;
-    rssi[n-1] = 0;
-  }
-
   Serial.print(F("mem = "));
   Serial.println(freeMem());
+  
 }
 
 const __FlashStringHelper* getErrorString(uint8_t error) {
@@ -97,8 +94,9 @@ const __FlashStringHelper* getErrorString(uint8_t error) {
   }
   return F("unknown");
 }
-
+/*
 void updateRoutingTable() {
+  
   for(uint8_t n=1;n<=N_NODES;n++) {
     RHRouter::RoutingTableEntry *route = manager->getRouteTo(n);
     if (n == nodeId) {
@@ -112,8 +110,8 @@ void updateRoutingTable() {
     }
   }
 }
-
-// Create a JSON string with the routing info to each node
+*/
+/*
 void getRouteInfoString(char *p, size_t len) {
   p[0] = '\0';
   strcat(p, "[");
@@ -130,7 +128,7 @@ void getRouteInfoString(char *p, size_t len) {
   }
   strcat(p, "]");
 }
-
+*/
 void printNodeInfo(uint8_t node, char *s) {
   Serial.print(F("node: "));
   Serial.print(F("{"));
@@ -144,12 +142,9 @@ void printNodeInfo(uint8_t node, char *s) {
 
 void loop() {
 
-  for(uint8_t n=1;n<=N_NODES;n++) {
-    if (n == nodeId) continue; // self
-
-    updateRoutingTable();
-    getRouteInfoString(buf, RH_MESH_MAX_MESSAGE_LEN);
-
+    //updateRoutingTable();
+    //getRouteInfoString(buf, RH_MESH_MAX_MESSAGE_LEN);
+    int n = 1
     Serial.print(F("->"));
     Serial.print(n);
     Serial.print(F(" :"));
@@ -157,35 +152,44 @@ void loop() {
 
     // send an acknowledged message to the target node
     uint8_t error = manager->sendtoWait((uint8_t *)buf, strlen(buf), n);
+
     if (error != RH_ROUTER_ERROR_NONE) {
+
       Serial.println();
       Serial.print(F(" ! "));
       Serial.println(getErrorString(error));
+
     } else {
+
       Serial.println(F(" OK"));
       // we received an acknowledgement from the next hop for the node we tried to send to.
       RHRouter::RoutingTableEntry *route = manager->getRouteTo(n);
       if (route->next_hop != 0) {
         rssi[route->next_hop-1] = rf95.lastRssi();
       }
+
     }
-    if (nodeId == 1) printNodeInfo(nodeId, buf); // debugging
+    //if (nodeId == 1) printNodeInfo(nodeId, buf); // debugging
 
     // listen for incoming messages. Wait a random amount of time before we transmit
     // again to the next node
     unsigned long nextTransmit = millis() + random(3000, 5000);
-    
+
     while (nextTransmit > millis()) {
+
       int waitTime = nextTransmit - millis();
       uint8_t len = sizeof(buf);
       uint8_t from;
+      
       if (manager->recvfromAckTimeout((uint8_t *)buf, &len, waitTime, &from)) {
+
         buf[len] = '\0'; // null terminate string
         Serial.print(from);
         Serial.print(F("->"));
         Serial.print(F(" :"));
         Serial.println(buf);
-        if (nodeId == 1) printNodeInfo(from, buf); // debugging
+
+        //if (nodeId == 1) printNodeInfo(from, buf); // debugging
         // we received data from node 'from', but it may have actually come from an intermediate node
         RHRouter::RoutingTableEntry *route = manager->getRouteTo(from);
         if (route->next_hop != 0) {
@@ -193,6 +197,6 @@ void loop() {
         }
       }
     }
-  }
+
 
 }

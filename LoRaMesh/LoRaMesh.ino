@@ -2,7 +2,7 @@
 #include <RHRouter.h>
 #include <RHMesh.h>
 #include <RH_RF95.h>
-#define RH_HAVE_SERIAL 
+#define  RH_HAVE_SERIAL 
 
 uint8_t nodeId;
 //uint8_t routes[N_NODES]; // full routing table for mesh
@@ -47,7 +47,7 @@ void setup() {
   }
   
   rf95.setTxPower(23, false);
-  rf95.setFrequency(433.0);
+  rf95.setFrequency(494.0);
   rf95.setCADTimeout(500);
 
   // Possible configurations:
@@ -57,17 +57,18 @@ void setup() {
   // Bw125Cr48Sf4096
 
   // long range configuration requires for on-air time
-  boolean longRange = false;
+  boolean longRange = true;
+  
   if (longRange) {
     
-    rf95::ModemConfig modem_config = {
+    RH_RF95::ModemConfig modem_config = {
       0x78, // Reg 0x1D: BW=125kHz, Coding=4/8, Header=explicit
       0xC4, // Reg 0x1E: Spread=4096chips/symbol, CRC=enable
       0x08  // Reg 0x26: LowDataRate=On, Agc=Off.  0x0C is LowDataRate=ON, ACG=ON
     };
     
     rf95.setModemRegisters(&modem_config);
-    if (!rf95.setModemConfig(RH_RF95::Bw125Cr48Sf4096)) {
+    if (!rf95.setModemConfig(RH_RF95::Bw500Cr45Sf128)) {
       Serial.println(F("set config failed"));
     }
     
@@ -81,15 +82,15 @@ void setup() {
 
 const __FlashStringHelper* getErrorString(uint8_t error) {
   switch(error) {
-    case 1: return F("invalid length");
+    case 1: return F("idn"); //invalid lenght
     break;
-    case 2: return F("no route");
+    case 2: return F("nRo"); //no route
     break;
-    case 3: return F("timeout");
+    case 3: return F("tmo"); //timeout
     break;
-    case 4: return F("no reply");
+    case 4: return F("noR"); //no replay
     break;
-    case 5: return F("unable to deliver");
+    case 5: return F("utd"); //unable to deliver
     break;
   }
   return F("unknown");
@@ -130,7 +131,7 @@ void getRouteInfoString(char *p, size_t len) {
 }
 */
 void printNodeInfo(uint8_t node, char *s) {
-  Serial.print(F("node: "));
+  //Serial.print(F("node: "));
   Serial.print(F("{"));
   Serial.print(F("\""));
   Serial.print(node);
@@ -144,19 +145,18 @@ void loop() {
 
     //updateRoutingTable();
     //getRouteInfoString(buf, RH_MESH_MAX_MESSAGE_LEN);
-    int n = 1
-    Serial.print(F("->"));
-    Serial.print(n);
-    Serial.print(F(" :"));
+    //int n = 1;
+    /*
+    Serial.print(F("Incoming")); 
+    Serial.print(F(": "));
     Serial.print(buf);
-
+*/
+/*
     // send an acknowledged message to the target node
     uint8_t error = manager->sendtoWait((uint8_t *)buf, strlen(buf), n);
 
     if (error != RH_ROUTER_ERROR_NONE) {
-
-      Serial.println();
-      Serial.print(F(" ! "));
+ 
       Serial.println(getErrorString(error));
 
     } else {
@@ -164,12 +164,16 @@ void loop() {
       Serial.println(F(" OK"));
       // we received an acknowledgement from the next hop for the node we tried to send to.
       RHRouter::RoutingTableEntry *route = manager->getRouteTo(n);
+      //Serial.print(route->next_hop);
+      /*
       if (route->next_hop != 0) {
-        rssi[route->next_hop-1] = rf95.lastRssi();
-      }
-
-    }
-    //if (nodeId == 1) printNodeInfo(nodeId, buf); // debugging
+         Serial.print(F("Send Hop; "));
+         Serial.print(route->next_hop);
+         //printNodeInfo(nodeId, buf);
+        //rssi[route->next_hop-1] = rf95.lastRssi();
+      }*/
+      
+   //} 
 
     // listen for incoming messages. Wait a random amount of time before we transmit
     // again to the next node
@@ -184,19 +188,23 @@ void loop() {
       if (manager->recvfromAckTimeout((uint8_t *)buf, &len, waitTime, &from)) {
 
         buf[len] = '\0'; // null terminate string
+       
         Serial.print(from);
         Serial.print(F("->"));
         Serial.print(F(" :"));
         Serial.println(buf);
-
-        //if (nodeId == 1) printNodeInfo(from, buf); // debugging
+ 
         // we received data from node 'from', but it may have actually come from an intermediate node
         RHRouter::RoutingTableEntry *route = manager->getRouteTo(from);
+
         if (route->next_hop != 0) {
-          rssi[route->next_hop-1] = rf95.lastRssi();
+         //Serial.print("Recieve Hop; ");
+         //Serial.print(route->next_hop);
+         //rssi[route->next_hop-1] = rf95.lastRssi();
+          printNodeInfo(from, buf);
         }
+        
       }
-    }
-
-
+    } 
+    
 }

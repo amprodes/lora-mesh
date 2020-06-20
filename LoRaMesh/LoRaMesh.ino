@@ -188,22 +188,29 @@ void loop() {
       if (manager->recvfromAckTimeout((uint8_t *)buf, &len, waitTime, &from)) {
 
         buf[len] = '\0'; // null terminate string
-       
-        Serial.print(from);
-        Serial.print(F("->"));
-        Serial.print(F(" :"));
-        Serial.println(buf);
  
         // we received data from node 'from', but it may have actually come from an intermediate node
         RHRouter::RoutingTableEntry *route = manager->getRouteTo(from);
-
-        if (route->next_hop != 0) {
-         //Serial.print("Recieve Hop; ");
-         //Serial.print(route->next_hop);
-         //rssi[route->next_hop-1] = rf95.lastRssi();
-          printNodeInfo(from, buf);
-        }
         
+        if (route->next_hop == 0) { 
+          
+          if(strcmp(buf, "ON") == 32){
+            Serial.println(F("Debo encender"));
+          }else if(strcmp(buf, "OFF") == 32){
+            Serial.println(F("Debo apagar"));
+          }
+
+          uint8_t error = manager->sendtoWait((uint8_t *)buf, strlen(buf), from);
+      
+          if (error != RH_ROUTER_ERROR_NONE) {
+       
+            Serial.println(getErrorString(error));
+      
+          } else {
+      
+          }
+          
+        } 
       }
     } 
     

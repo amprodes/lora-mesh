@@ -115,7 +115,7 @@ void printNodeInfo(uint8_t node, char *s, char *b) {
   Serial.print(s);
   Serial.print(F(", "));
   Serial.print(b);
-  Serial.print(F("\""));
+  Serial.print(F("\"")); 
   Serial.print(F(": "));
   Serial.print(b);
   

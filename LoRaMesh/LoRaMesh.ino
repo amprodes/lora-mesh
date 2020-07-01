@@ -80,7 +80,47 @@ void setup() {
   Serial.println(freeMem());
   
 }
+  
+//draw battery level in position x,y
+void batterylevel()
+{
+  //read the voltage and convert it to volt
+  double curvolt = double( readVcc() ) / 1000;
+  // check if voltge is bigger than 4.2 volt so this is a power source
+  Serial.print(curvolt);
+  
+}
 
+//read internal voltage
+long readVcc() {
+  long result;
+  // Read 1.1V reference against AVcc
+  ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+  delay(2); // Wait for Vref to settle
+  ADCSRA |= _BV(ADSC); // Convert
+  while (bit_is_set(ADCSRA, ADSC));
+  result = ADCL;
+  result |= ADCH << 8;
+  result = 1126400L / result; // Back-calculate AVcc in mV
+  return result;
+}
+
+void printNodeInfo(uint8_t node, char *s, char *b) {
+  Serial.print(F("node: "));
+  Serial.print(F("{"));
+  Serial.print(F("\""));
+  Serial.print(node);
+  Serial.print(F("\""));
+  Serial.print(F(": "));
+  Serial.print(s);
+  Serial.print(F(", "));
+  Serial.print(b);
+  Serial.print(F("\""));
+  Serial.print(F(": "));
+  Serial.print(b);
+  
+  Serial.println(F("}"));
+}
 const __FlashStringHelper* getErrorString(uint8_t error) {
   switch(error) {
     case 1: return F("idn"); //invalid lenght
